@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Learning: Descriptive Text (50 Questions)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar for better appearance */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ==================== TOP NAVIGATION ==================== -->
+  <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i data-lucide="book-open-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold font-display text-slate-800 leading-tight">DescriptiveLab</h1>
+          <p class="text-xs text-slate-500 font-medium">50 Interactive Master Quizzes</p>
+        </div>
+      </div>
+
+      <!-- Quick User Info Badge (Shown after login) -->
+      <div id="nav-student-info" class="hidden items-center space-x-3">
+        <div class="text-right hidden sm:block">
+          <p id="nav-student-name" class="text-sm font-semibold text-slate-800"></p>
+          <span id="nav-student-class" class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-600 border border-brand-200"></span>
+        </div>
+        <button onclick="openMaterialModal()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+          <span>Rangkuman Materi</span>
+        </button>
+      </div>
+
+      <!-- Quick Action on Login Screen: Google Sheets Config Button -->
+      <div id="nav-admin-btn" class="flex items-center">
+        <button onclick="openSheetConfigModal()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition">
+          <i data-lucide="sheet" class="w-4 h-4 text-emerald-600"></i>
+          <span class="hidden sm:inline">Pengaturan Spreadsheet</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+
+    <!-- 1. LOGIN SCREEN -->
+    <section id="screen-login" class="max-w-md w-full mx-auto my-auto">
+      <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl shadow-slate-200/60 border border-slate-100 relative overflow-hidden">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-20 -right-20 w-44 h-44 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-20 -left-20 w-44 h-44 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center p-3 bg-brand-50 rounded-2xl text-brand-600 mb-3 shadow-inner">
+            <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+          </div>
+          <h2 class="text-2xl font-bold font-display text-slate-900 tracking-tight">Latihan Descriptive Text</h2>
+          <p class="text-sm text-slate-500 mt-1">Latihan mandiri 50 soal tingkat Beginner - Intermediate</p>
+        </div>
+
+        <form id="form-login" onsubmit="handleStartQuiz(event)" class="space-y-5">
+          <div>
+            <label for="input-name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Nama Lengkap Siswa</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <i data-lucide="user" class="w-5 h-5"></i>
+              </span>
+              <input type="text" id="input-name" required placeholder="Contoh: Muhammad Rizky" 
+                class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 text-sm transition bg-slate-50 focus:bg-white font-medium" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Pilih Kelas</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="cursor-pointer">
+                <input type="radio" name="student-class" value="XA" checked class="peer sr-only">
+                <div class="text-center p-3 rounded-xl border-2 border-slate-200 bg-slate-50 peer-checked:border-brand-600 peer-checked:bg-brand-50/50 peer-checked:text-brand-700 transition font-bold text-sm">
+                  Kelas XA
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="student-class" value="XB" class="peer sr-only">
+                <div class="text-center p-3 rounded-xl border-2 border-slate-200 bg-slate-50 peer-checked:border-brand-600 peer-checked:bg-brand-50/50 peer-checked:text-brand-700 transition font-bold text-sm">
+                  Kelas XB
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-4 text-xs text-indigo-900 space-y-1.5">
+            <div class="font-semibold flex items-center gap-1.5">
+              <i data-lucide="info" class="w-4 h-4 text-brand-600"></i> Ketentuan Pengerjaan:
+            </div>
+            <ul class="list-disc list-inside text-indigo-700/90 space-y-1">
+              <li>Jumlah total soal: <strong>50 butir pilihan ganda</strong>.</li>
+              <li>Waktu pengerjaan fleksibel dengan timer stopwatch.</li>
+              <li>Dapat melompat & menandai soal ragu-ragu kapan saja.</li>
+              <li>Pembahasan dan analisis jawaban lengkap di akhir sesi.</li>
+            </ul>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-bold text-sm shadow-lg shadow-brand-500/25 flex items-center justify-center space-x-2 transition">
+            <span>Mulai Pengerjaan Soal</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. QUIZ SCREEN -->
+    <section id="screen-quiz" class="hidden flex-col gap-6">
+      
+      <!-- Top Bar: Progress, Timer, Stats -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Progress</span>
+          <div class="w-36 sm:w-48 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div id="progress-bar-fill" class="bg-gradient-to-r from-brand-600 to-cyan-500 h-2.5 rounded-full transition-all duration-300" style="width: 2%"></div>
+          </div>
+          <span id="progress-text" class="text-xs font-bold text-slate-700">1 / 50</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <!-- Stopwatch -->
+          <div class="flex items-center space-x-1.5 text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold">
+            <i data-lucide="timer" class="w-4 h-4 text-slate-400"></i>
+            <span id="timer-display">00:00</span>
+          </div>
+
+          <!-- Bookmark toggle -->
+          <button id="btn-bookmark" onclick="toggleBookmark()" class="flex items-center space-x-1 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300 transition">
+            <i data-lucide="bookmark" id="bookmark-icon" class="w-4 h-4"></i>
+            <span id="bookmark-label">Ragu-ragu</span>
+          </button>
+
+          <!-- Drawer Toggle on Mobile -->
+          <button onclick="toggleGridModal(true)" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Content Layout: Question Left, Quick Navigation Right -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Question Box (8 cols) -->
+        <div class="lg:col-span-8 flex flex-col space-y-4">
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex-1 flex flex-col">
+            
+            <!-- Meta tags (Topic, Level) -->
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+              <div class="flex items-center gap-2">
+                <span id="q-category" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100">People</span>
+                <span id="q-level" class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">Beginner</span>
+              </div>
+              <span id="q-number-title" class="text-sm font-bold text-slate-400">Soal No. 1</span>
+            </div>
+
+            <!-- Reading Stimulus / Text passage -->
+            <div id="stimulus-container" class="mb-6 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-sm leading-relaxed text-slate-700 font-normal select-text">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- Question Prompt -->
+            <div class="mb-6">
+              <h3 id="q-text" class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                <!-- Question Title -->
+              </h3>
+            </div>
+
+            <!-- Options List -->
+            <div id="options-container" class="space-y-3 mb-6">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Navigation Action Buttons -->
+            <div class="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between">
+              <button id="btn-prev" onclick="prevQuestion()" class="px-5 py-2.5 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-100 text-sm flex items-center space-x-1.5 transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                <span>Sebelumnya</span>
+              </button>
+
+              <div class="flex items-center space-x-2">
+                <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm flex items-center space-x-1.5 shadow-md shadow-brand-500/20 transition">
+                  <span>Berikutnya</span>
+                  <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+                <button id="btn-finish" onclick="confirmSubmitQuiz()" class="hidden px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm items-center space-x-1.5 shadow-md shadow-emerald-600/20 transition">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i>
+                  <span>Selesaikan Kuis</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Question Navigator Desktop (4 cols) -->
+        <div class="hidden lg:block lg:col-span-4">
+          <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 sticky top-24">
+            <h4 class="font-display font-bold text-slate-800 text-base mb-4 flex items-center justify-between">
+              <span>Navigasi Soal</span>
+              <span class="text-xs font-medium text-slate-400">1 - 50</span>
+            </h4>
+
+            <!-- Legend -->
+            <div class="grid grid-cols-3 gap-2 text-[11px] font-medium text-slate-600 mb-4 pb-4 border-b border-slate-100">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md bg-brand-600 inline-block"></span>
+                <span>Terjawab</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md bg-amber-400 inline-block"></span>
+                <span>Ragu-ragu</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md border border-slate-200 bg-white inline-block"></span>
+                <span>Kosong</span>
+              </div>
+            </div>
+
+            <!-- Numbers Grid -->
+            <div id="desktop-grid" class="grid grid-cols-5 gap-2 max-h-[350px] overflow-y-auto pr-1">
+              <!-- Dynamically populated buttons -->
+            </div>
+
+            <button onclick="confirmSubmitQuiz()" class="w-full mt-6 py-3 px-4 rounded-xl border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-50 font-bold text-sm transition flex items-center justify-center space-x-2">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Kumpulkan Jawaban</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. RESULT & REVIEW SCREEN -->
+    <section id="screen-result" class="hidden flex-col gap-8 max-w-4xl mx-auto w-full">
+      
+      <!-- Printable Certificate / Summary Box -->
+      <div id="print-area" class="bg-white rounded-3xl p-8 sm:p-10 shadow-lg border border-slate-200 relative overflow-hidden">
+        
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-100">
+          <div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-600 border border-brand-200 inline-block mb-2">Hasil Evaluasi Belajar</span>
+            <h2 class="text-3xl font-display font-extrabold text-slate-900 tracking-tight">Descriptive Text Mastery</h2>
+            <p class="text-sm text-slate-500 mt-1">Laporan pencapaian latihan pemahaman teks deskriptif</p>
+          </div>
+          
+          <div class="text-center md:text-right">
+            <p class="text-xs uppercase tracking-wider font-bold text-slate-400">Nama Siswa / Kelas</p>
+            <p id="res-student-name" class="text-lg font-bold text-slate-800"></p>
+            <p id="res-student-class" class="text-sm font-semibold text-brand-600"></p>
+          </div>
+        </div>
+
+        <!-- Metric Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+            <span class="text-xs font-bold text-slate-400 uppercase">Nilai Akhir</span>
+            <div id="res-score" class="text-3xl font-black text-brand-600 mt-1">0</div>
+            <span class="text-[11px] text-slate-500 font-medium">Skala 100</span>
+          </div>
+
+          <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-100 text-center">
+            <span class="text-xs font-bold text-emerald-600 uppercase">Benar</span>
+            <div id="res-correct" class="text-3xl font-black text-emerald-600 mt-1">0</div>
+            <span class="text-[11px] text-emerald-600/80 font-medium">dari 50 Soal</span>
+          </div>
+
+          <div class="bg-rose-50/60 p-4 rounded-2xl border border-rose-100 text-center">
+            <span class="text-xs font-bold text-rose-600 uppercase">Salah / Lewat</span>
+            <div id="res-wrong" class="text-3xl font-black text-rose-600 mt-1">0</div>
+            <span class="text-[11px] text-rose-600/80 font-medium">Perlu evaluasi</span>
+          </div>
+
+          <div class="bg-cyan-50/60 p-4 rounded-2xl border border-cyan-100 text-center">
+            <span class="text-xs font-bold text-cyan-700 uppercase">Waktu</span>
+            <div id="res-duration" class="text-2xl font-black text-cyan-700 mt-1">00:00</div>
+            <span class="text-[11px] text-cyan-600/80 font-medium">Durasi tes</span>
+          </div>
+        </div>
+
+        <!-- Predicate Feedback Message -->
+        <div id="res-badge-box" class="p-4 rounded-2xl border text-sm mb-6 flex items-start gap-3">
+          <i data-lucide="award" class="w-6 h-6 shrink-0 mt-0.5"></i>
+          <div>
+            <h5 id="res-badge-title" class="font-bold"></h5>
+            <p id="res-badge-desc" class="mt-0.5 text-xs leading-relaxed opacity-90"></p>
+          </div>
+        </div>
+
+        <!-- Google Sheets Sync Status Alert Box -->
+        <div id="sheet-sync-status" class="mb-6 p-4 rounded-2xl border text-xs sm:text-sm flex items-center justify-between transition-all bg-slate-50 border-slate-200 text-slate-600">
+          <div class="flex items-center space-x-2.5">
+            <div id="sync-spinner" class="animate-spin text-brand-600">
+              <i data-lucide="loader-2" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p id="sync-title" class="font-bold text-slate-800">Menyimpan nilai ke Google Spreadsheet...</p>
+              <p id="sync-subtitle" class="text-xs text-slate-500">Mohon jangan menutup halaman ini terlebih dahulu.</p>
+            </div>
+          </div>
+          <button id="btn-retry-sync" onclick="sendDataToGoogleSheet()" class="hidden px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+            Kirim Ulang
+          </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 print:hidden">
+          <button onclick="window.print()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-50 flex items-center space-x-1.5 transition">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Cetak / PDF Nilai</span>
+          </button>
+          
+          <div class="flex items-center space-x-2">
+            <button onclick="scrollToReview()" class="px-4 py-2.5 rounded-xl bg-slate-800 text-white font-semibold text-xs hover:bg-slate-900 flex items-center space-x-1.5 transition shadow">
+              <i data-lucide="file-search" class="w-4 h-4"></i>
+              <span>Review 50 Pembahasan</span>
+            </button>
+            <button onclick="restartQuiz()" class="px-4 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-xs hover:bg-brand-700 flex items-center space-x-1.5 transition shadow-md shadow-brand-500/20">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              <span>Ulangi Latihan</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Pembahasan Section -->
+      <div id="review-section" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold font-display text-slate-800 flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-5 h-5 text-brand-600"></i>
+            <span>Analisis & Kunci Jawaban Lengkap (1 - 50)</span>
+          </h3>
+          <span class="text-xs text-slate-500">Gunakan untuk refleksi belajar</span>
+        </div>
+
+        <div id="review-list" class="space-y-4">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Modal: Mobile Grid Selector -->
+  <div id="modal-mobile-grid" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 flex flex-col max-h-[80vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h4 class="font-display font-bold text-slate-800">Daftar Nomor Soal</h4>
+        <button onclick="toggleGridModal(false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="mobile-grid" class="grid grid-cols-5 gap-2.5 overflow-y-auto py-4">
+        <!-- Rendered via JS -->
+      </div>
+      <button onclick="toggleGridModal(false)" class="mt-2 py-2.5 rounded-xl bg-slate-100 font-semibold text-slate-700 text-xs w-full">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. Modal: Material / Rangkuman Descriptive Text -->
+  <div id="modal-material" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[85vh] overflow-hidden">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center space-x-2 text-brand-600">
+          <i data-lucide="book-open" class="w-6 h-6"></i>
+          <h3 class="font-display font-bold text-lg text-slate-900">Rangkuman Descriptive Text</h3>
+        </div>
+        <button onclick="closeMaterialModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto py-4 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed pr-2">
+        <div class="p-4 rounded-2xl bg-brand-50/60 border border-brand-100">
+          <h4 class="font-bold text-brand-900 mb-1">1. Social Function / Purpose</h4>
+          <p>Teks deskriptif bertujuan untuk menggambarkan orang, tempat, benda, atau hewan tertentu secara spesifik (to describe a particular person, place, animal, or thing).</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-100">
+          <h4 class="font-bold text-amber-900 mb-1">2. Generic Structure (Struktur Teks)</h4>
+          <ul class="list-disc list-inside space-y-1 text-amber-800">
+            <li><strong>Identification:</strong> Memperkenalkan subjek yang akan dideskripsikan (biasanya di paragraf pertama).</li>
+            <li><strong>Description:</strong> Menjelaskan ciri-ciri khusus, sifat, penampilan fisik, perilaku, atau keunikan dari subjek tersebut.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100">
+          <h4 class="font-bold text-emerald-900 mb-1">3. Language Features (Ciri Kebahasaan)</h4>
+          <ul class="list-disc list-inside space-y-1 text-emerald-800">
+            <li><strong>Specific participant:</strong> Objek yang spesifik (contoh: <em>My lovely cat Molly, Borobudur Temple</em>, bukan kucing atau candi secara umum).</li>
+            <li><strong>Simple Present Tense:</strong> Menggunakan kata kerja bentuk pertama (V1 / is / am / are) karena menyatakan fakta.</li>
+            <li><strong>Adjectives & Adjective Phrases:</strong> Kata sifat untuk mendeskripsikan (contoh: <em>fluffy, magnificent, ancient, tall</em>).</li>
+            <li><strong>Action Verbs:</strong> Kata kerja yang menggambarkan aktivitas nyata (contoh: <em>runs, shines, sleeps</em>).</li>
+          </ul>
+        </div>
+      </div>
+
+      <button onclick="closeMaterialModal()" class="mt-3 py-2.5 px-4 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20">
+        Saya Mengerti, Lanjutkan Latihan
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. Modal: Google Sheets Web App Config & Code Tutorial -->
+  <div id="modal-sheet-config" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[88vh] overflow-hidden">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5 text-emerald-600">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
+            <i data-lucide="database" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 leading-tight">Integrasi Google Spreadsheet</h3>
+            <p class="text-xs text-slate-500">Kirim data nilai otomatis ke spreadsheet via Google Apps Script</p>
+          </div>
+        </div>
+        <button onclick="closeSheetConfigModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto py-4 space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed pr-1">
+        
+        <!-- Input URL -->
+        <div class="space-y-1.5">
+          <label for="script-url-input" class="block font-bold text-slate-800 text-xs uppercase tracking-wider">
+            Web App URL (Google Apps Script):
+          </label>
+          <div class="flex gap-2">
+            <input type="url" id="script-url-input" placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-slate-800 bg-slate-50 focus:bg-white transition" />
+            <button onclick="saveSheetUrl()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shrink-0 transition flex items-center space-x-1 shadow-sm">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              <span>Simpan</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400">URL ini akan otomatis digunakan untuk mencatat setiap siswa yang selesai mengerjakan tes.</p>
+        </div>
+
+        <!-- Script Instruction Accordion / Box -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <i data-lucide="code" class="w-4 h-4 text-brand-600"></i>
+              Kode Apps Script (Salin & Pasang di Spreadsheet):
+            </span>
+            <button onclick="copyAppsScriptCode()" id="btn-copy-code" class="text-[11px] px-2.5 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 font-semibold text-slate-700 transition flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Kode
+            </button>
+          </div>
+
+          <pre id="apps-script-code" class="p-3 bg-slate-900 text-emerald-400 rounded-xl text-[11px] font-mono overflow-x-auto leading-relaxed">
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    
+    // Buat header otomatis bila sheet masih kosong
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Timestamp", 
+        "Nama Siswa", 
+        "Kelas", 
+        "Nilai (0-100)", 
+        "Jumlah Benar", 
+        "Jumlah Salah", 
+        "Durasi Waktu", 
+        "Predikat",
+        "Detail Jawaban"
+      ]);
+      sheet.getRange(1, 1, 1, 9).setFontWeight("bold").setBackground("#e0e7ff");
+    }
+    
+    // Tambahkan baris data siswa
+    sheet.appendRow([
+      data.timestamp || new Date().toLocaleString("id-ID"),
+      data.studentName,
+      data.studentClass,
+      data.score,
+      data.correctCount,
+      data.wrongCount,
+      data.duration,
+      data.predicate,
+      data.answersSummary
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: "success"
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: "error", 
+      error: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+
+          <!-- Step by Step -->
+          <div class="text-xs space-y-1 text-slate-600 pt-1">
+            <p class="font-bold text-slate-700">Cara Memasang:</p>
+            <ol class="list-decimal list-inside space-y-1 pl-1 text-[11px]">
+              <li>Buka <strong>Google Sheets</strong> baru di browser.</li>
+              <li>Klik menu <strong>Extensions (Ekstensi) &rarr; Apps Script</strong>.</li>
+              <li>Hapus kode bawaan, lalu paste kode di atas. Klik simpan (ikon disket).</li>
+              <li>Klik tombol <strong>Deploy (Terapkan) &rarr; New Deployment (Penerapan Baru)</strong>.</li>
+              <li>Pilih tipe <strong>Web app</strong>. Atur <em>Execute as: Me</em> dan <strong>Who has access: Anyone (Siapa saja)</strong>.</li>
+              <li>Klik <strong>Deploy</strong>, lalu salin tautan <strong>Web app URL</strong> dan tempelkan pada kolom di atas.</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+
+      <button onclick="closeSheetConfigModal()" class="mt-2 py-2.5 px-4 rounded-xl bg-slate-800 text-white font-bold text-xs shadow-md">
+        Selesai / Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Modal: Confirmation Box (Custom modal without alert) -->
+  <div id="modal-confirm" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="alert-circle" class="w-6 h-6"></i>
+      </div>
+      <h4 class="text-base font-bold font-display text-slate-800">Kumpulkan Jawaban Sekarang?</h4>
+      <p id="confirm-status-text" class="text-xs text-slate-500 mt-1.5 leading-relaxed">Pastikan semua soal telah kamu periksa dengan cermat.</p>
+      <div class="grid grid-cols-2 gap-3 mt-6">
+        <button onclick="closeConfirmModal()" class="py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs hover:bg-slate-50">
+          Cek Lagi
+        </button>
+        <button onclick="submitQuizFinal()" class="py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md shadow-brand-500/20">
+          Ya, Selesaikan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== QUESTION BANK JAVASCRIPT ==================== -->
+  <script>
+    // 50 Questions covering People, Places, Animals, Things, Grammar (Simple Present, Adjectives), and Generic Structure
+    const questionsData = [
+      // PASSAGE 1: Raja Ampat (Places)
+      {
+        id: 1,
+        category: "Places",
+        level: "Beginner",
+        passage: "Raja Ampat is an archipelago located in West Papua, Indonesia. It consists of over 1,500 small islands, cays, and shoals surrounding the four main islands: Misool, Salawati, Batanta, and Waigeo. The waters are world-renowned for their pristine coral reefs and extraordinary marine biodiversity. Visitors from all around the globe travel there to enjoy scuba diving and breathtaking emerald landscapes.",
+        question: "What is the main purpose of the text above?",
+        options: [
+          "To tell how to buy tickets to Papua",
+          "To describe the beauty and features of Raja Ampat",
+          "To entertain readers with a folktale from Misool",
+          "To persuade people to stop diving in coral reefs"
+        ],
+        answer: 1,
+        explanation: "Tujuan teks deskriptif adalah mendeskripsikan tempat tertentu (to describe the beauty and features of Raja Ampat)."
+      },
+      {
+        id: 2,
+        category: "Places",
+        level: "Beginner",
+        passage: "Raja Ampat is an archipelago located in West Papua, Indonesia. It consists of over 1,500 small islands, cays, and shoals surrounding the four main islands: Misool, Salawati, Batanta, and Waigeo. The waters are world-renowned for their pristine coral reefs and extraordinary marine biodiversity.",
+        question: "How many main islands are there in Raja Ampat according to the text?",
+        options: [
+          "Two islands",
+          "Three islands",
+          "Four islands",
+          "Over 1,500 islands"
+        ],
+        answer: 2,
+        explanation: "Berdasarkan kalimat '...surrounding the four main islands: Misool, Salawati, Batanta, and Waigeo', ada 4 pulau utama."
+      },
+      {
+        id: 3,
+        category: "Places",
+        level: "Intermediate",
+        passage: "The waters are world-renowned for their pristine coral reefs and extraordinary marine biodiversity.",
+        question: "The word 'pristine' in the sentence is closest in meaning to...",
+        options: [
+          "Dirty and polluted",
+          "Pure and untouched",
+          "Artificial and built",
+          "Dangerous and rough"
+        ],
+        answer: 1,
+        explanation: "Kata 'pristine' bermakna murni, alami, belum terjamah/tercemar (pure and untouched)."
+      },
+      {
+        id: 4,
+        category: "Places",
+        level: "Beginner",
+        passage: "Raja Ampat is an archipelago located in West Papua, Indonesia.",
+        question: "In generic structure, the first sentence of a descriptive text functions as...",
+        options: [
+          "Re-orientation",
+          "Resolution",
+          "Identification",
+          "Complication"
+        ],
+        answer: 2,
+        explanation: "Bagian awal teks deskriptif yang memperkenalkan subjek dinamakan 'Identification'."
+      },
+
+      // PASSAGE 2: My Pet Cat, Milo (Animals)
+      {
+        id: 5,
+        category: "Animals",
+        level: "Beginner",
+        passage: "I have a beloved domestic cat named Milo. He is a British Shorthair with dense, silver-gray fur and round copper eyes. Milo is very calm and affectionate. Every morning, he nudges my legs gently to wake me up. He enjoys sleeping on the velvet rug and chasing laser pointers in the living room.",
+        question: "What color are Milo's eyes?",
+        options: [
+          "Emerald green",
+          "Bright blue",
+          "Round copper",
+          "Dark black"
+        ],
+        answer: 2,
+        explanation: "Dalam teks tertulis: '...dense, silver-gray fur and round copper eyes'."
+      },
+      {
+        id: 6,
+        category: "Animals",
+        level: "Beginner",
+        passage: "I have a beloved domestic cat named Milo. He is a British Shorthair with dense, silver-gray fur and round copper eyes. Milo is very calm and affectionate.",
+        question: "Which of the following words from the text is an adjective?",
+        options: [
+          "Affectionate",
+          "Living room",
+          "Wakes",
+          "Pointers"
+        ],
+        answer: 0,
+        explanation: "'Affectionate' (penyayang/ramah) merupakan kata sifat (adjective) yang menerangkan sifat Milo."
+      },
+      {
+        id: 7,
+        category: "Animals",
+        level: "Intermediate",
+        passage: "Every morning, he nudges my legs gently to wake me up. He enjoys sleeping on the velvet rug...",
+        question: "Why does the writer use the Simple Present Tense ('nudges', 'enjoys')?",
+        options: [
+          "To show that Milo lived in the past",
+          "To describe Milo's habitual actions and permanent characteristics",
+          "To predict what Milo will do next year",
+          "To command the readers to buy a cat"
+        ],
+        answer: 1,
+        explanation: "Simple Present Tense dalam descriptive text berfungsi menyatakan kebiasaan sehari-hari dan fakta atau karakteristik umum subjek."
+      },
+      {
+        id: 8,
+        category: "Animals",
+        level: "Beginner",
+        passage: "He enjoys sleeping on the velvet rug and chasing laser pointers in the living room.",
+        question: "What does Milo like to chase in the living room?",
+        options: [
+          "Mice and bugs",
+          "Other cats",
+          "Laser pointers",
+          "Plastic balls"
+        ],
+        answer: 2,
+        explanation: "Sesuai isi bacaan: '...and chasing laser pointers in the living room.'"
+      },
+
+      // PASSAGE 3: Cristiano Ronaldo (People)
+      {
+        id: 9,
+        category: "People",
+        level: "Beginner",
+        passage: "Cristiano Ronaldo is one of the most celebrated football players on the planet. Standing at 187 cm tall, he possesses an athletic, muscular physique honed through strict discipline and rigorous training. He has short dark hair, sharp facial features, and a confident smile. On the pitch, he is widely recognized for his explosive speed, exceptional aerial headers, and powerful shots.",
+        question: "What is the physical build of Cristiano Ronaldo described as?",
+        options: [
+          "Frail and tall",
+          "Athletic and muscular",
+          "Plump and short",
+          "Skinny and fragile"
+        ],
+        answer: 1,
+        explanation: "Di dalam teks disebutkan: 'he possesses an athletic, muscular physique'."
+      },
+      {
+        id: 10,
+        category: "People",
+        level: "Beginner",
+        passage: "Cristiano Ronaldo is one of the most celebrated football players on the planet. Standing at 187 cm tall, he possesses an athletic, muscular physique...",
+        question: "How tall is Cristiano Ronaldo according to the text?",
+        options: [
+          "175 cm",
+          "180 cm",
+          "187 cm",
+          "192 cm"
+        ],
+        answer: 2,
+        explanation: "Tertulis secara eksplisit: 'Standing at 187 cm tall'."
+      },
+      {
+        id: 11,
+        category: "People",
+        level: "Intermediate",
+        passage: "On the pitch, he is widely recognized for his explosive speed, exceptional aerial headers, and powerful shots.",
+        question: "The word 'exceptional' has the closest synonym to...",
+        options: [
+          "Average",
+          "Outstanding",
+          "Terrible",
+          "Common"
+        ],
+        answer: 1,
+        explanation: "'Exceptional' berarti luar biasa hebat, bersinonim dengan 'outstanding' atau 'remarkable'."
+      },
+      {
+        id: 12,
+        category: "People",
+        level: "Intermediate",
+        passage: "Standing at 187 cm tall, he possesses an athletic, muscular physique honed through strict discipline and rigorous training.",
+        question: "What has shaped Ronaldo's athletic body?",
+        options: [
+          "Special medicines and fast food",
+          "Strict discipline and rigorous training",
+          "Playing games late at night",
+          "Passive relaxation"
+        ],
+        answer: 1,
+        explanation: "Berdasarkan kalimat '...honed through strict discipline and rigorous training'."
+      },
+
+      // PASSAGE 4: Ancient Mechanical Watch (Things)
+      {
+        id: 13,
+        category: "Things",
+        level: "Beginner",
+        passage: "My grandfather gave me an antique pocket watch for my seventeenth birthday. It is made of solid brass with an ornate floral engraving on the outer lid. When you press the small crown at the top, the cover springs open, revealing a classic porcelain dial with black Roman numerals and delicate golden hands. It doesn't use batteries; instead, it runs on mechanical winding.",
+        question: "What material is the pocket watch mainly made of?",
+        options: [
+          "Stainless steel",
+          "Pure silver",
+          "Solid brass",
+          "Polished plastic"
+        ],
+        answer: 2,
+        explanation: "Disebutkan di baris kedua: 'It is made of solid brass'."
+      },
+      {
+        id: 14,
+        category: "Things",
+        level: "Beginner",
+        passage: "When you press the small crown at the top, the cover springs open, revealing a classic porcelain dial with black Roman numerals and delicate golden hands.",
+        question: "What numerals are on the watch dial?",
+        options: [
+          "Arabic numerals",
+          "Roman numerals",
+          "Chinese characters",
+          "Binary digits"
+        ],
+        answer: 1,
+        explanation: "Berdasarkan teks: '...with black Roman numerals'."
+      },
+      {
+        id: 15,
+        category: "Things",
+        level: "Intermediate",
+        passage: "It doesn't use batteries; instead, it runs on mechanical winding.",
+        question: "How does the watch operate?",
+        options: [
+          "By solar energy",
+          "By disposable batteries",
+          "By mechanical winding",
+          "By wireless charging"
+        ],
+        answer: 2,
+        explanation: "Tertulis jelas: '...instead, it runs on mechanical winding'."
+      },
+
+      // PASSAGE 5: Borobudur Temple (Places)
+      {
+        id: 16,
+        category: "Places",
+        level: "Beginner",
+        passage: "Borobudur is a 9th-century Mahayana Buddhist temple located in Magelang Regency, Central Java, Indonesia. It is decorated with 2,672 relief panels and 504 Buddha statues. The monument consists of nine stacked platforms, six square and three circular, topped by a central dome. It is the world's largest Buddhist temple.",
+        question: "Where is Borobudur Temple located?",
+        options: [
+          "West Java",
+          "Magelang Regency, Central Java",
+          "Denpasar, Bali",
+          "North Sumatra"
+        ],
+        answer: 1,
+        explanation: "Sesuai kalimat pertama: 'located in Magelang Regency, Central Java, Indonesia'."
+      },
+      {
+        id: 17,
+        category: "Places",
+        level: "Beginner",
+        passage: "It is decorated with 2,672 relief panels and 504 Buddha statues.",
+        question: "How many Buddha statues decorate Borobudur?",
+        options: [
+          "504 statues",
+          "2,672 statues",
+          "9 statues",
+          "1,500 statues"
+        ],
+        answer: 0,
+        explanation: "Berdasarkan data teks, terdapat 504 patung Buddha dan 2.672 panel relief."
+      },
+      {
+        id: 18,
+        category: "Places",
+        level: "Intermediate",
+        passage: "The monument consists of nine stacked platforms, six square and three circular, topped by a central dome.",
+        question: "What is at the top of the monument?",
+        options: [
+          "A tall bell tower",
+          "A central dome",
+          "A modern pyramid",
+          "A giant golden statue"
+        ],
+        answer: 1,
+        explanation: "Disebutkan pada teks: '...topped by a central dome' (kubah pusat/stupa induk)."
+      },
+      {
+        id: 19,
+        category: "Places",
+        level: "Intermediate",
+        passage: "It is the world's largest Buddhist temple.",
+        question: "The word 'monument' in the passage refers to...",
+        options: [
+          "The city of Magelang",
+          "The relief panels only",
+          "Borobudur Temple",
+          "The central dome only"
+        ],
+        answer: 2,
+        explanation: "Kata 'monument' mengacu pada keseluruhan Candi Borobudur sebagai bangunan bersejarah."
+      },
+
+      // PASSAGE 6: The Komodo Dragon (Animals)
+      {
+        id: 20,
+        category: "Animals",
+        level: "Beginner",
+        passage: "The Komodo dragon (Varanus komodoensis) is the largest living species of lizard in the world. Found in the Indonesian islands of Komodo, Rinca, Flores, and Gili Motang, these massive reptiles can grow up to a maximum length of 3 meters and weigh approximately 70 kilograms. They have long, flat heads with rounded snouts, scaly skin, bowed legs, and huge, muscular tails.",
+        question: "What is the Komodo dragon known for?",
+        options: [
+          "The fastest bird in the forest",
+          "The largest living species of lizard",
+          "The smallest reptile in Asia",
+          "A peaceful vegetarian animal"
+        ],
+        answer: 1,
+        explanation: "Kalimat pertama menyatakan: 'is the largest living species of lizard in the world'."
+      },
+      {
+        id: 21,
+        category: "Animals",
+        level: "Intermediate",
+        passage: "They have long, flat heads with rounded snouts, scaly skin, bowed legs, and huge, muscular tails.",
+        question: "Which of the following is NOT mentioned as a physical trait of the Komodo dragon?",
+        options: [
+          "Bow legs",
+          "Scaly skin",
+          "Feathery wings",
+          "Muscular tails"
+        ],
+        answer: 2,
+        explanation: "Komodo adalah reptil berkaki bengkok, berkulit sisik, dan berekor kekar, tidak memiliki sayap berbulu ('Feathery wings')."
+      },
+      {
+        id: 22,
+        category: "Animals",
+        level: "Intermediate",
+        passage: "Found in the Indonesian islands of Komodo, Rinca, Flores, and Gili Motang, these massive reptiles can grow up to a maximum length of 3 meters...",
+        question: "The word 'massive' is closest in meaning to...",
+        options: [
+          "Tiny",
+          "Huge",
+          "Swift",
+          "Harmless"
+        ],
+        answer: 1,
+        explanation: "'Massive' berarti sangat besar atau berukuran raksasa, bersinonim dengan 'Huge'."
+      },
+
+      // PASSAGE 7: My English Teacher, Mrs. Sarah (People)
+      {
+        id: 23,
+        category: "People",
+        level: "Beginner",
+        passage: "Mrs. Sarah is our English teacher in Grade X. She is in her early thirties with fair skin, wavy chestnut hair, and kind hazel eyes behind neat rectangular glasses. She always wears tidy batik shirts on Fridays. Mrs. Sarah is known for her patience; she never gets angry when students ask repeatedly about confusing grammar rules. Her clear explanations make English lessons lively and enjoyable.",
+        question: "What does Mrs. Sarah wear on Fridays?",
+        options: [
+          "Formal sports jersey",
+          "Tidy batik shirts",
+          "Casual denim jacket",
+          "Traditional black robe"
+        ],
+        answer: 1,
+        explanation: "Disebutkan dalam teks: 'She always wears tidy batik shirts on Fridays'."
+      },
+      {
+        id: 24,
+        category: "People",
+        level: "Beginner",
+        passage: "Mrs. Sarah is known for her patience; she never gets angry when students ask repeatedly about confusing grammar rules.",
+        question: "What positive personality trait does Mrs. Sarah have?",
+        options: [
+          "She is impatient",
+          "She is arrogant",
+          "She is patient and calm",
+          "She is fierce and noisy"
+        ],
+        answer: 2,
+        explanation: "Teks menyebutkan 'known for her patience' dan 'never gets angry', yang membuktikan ia orang yang sabar (patient)."
+      },
+      {
+        id: 25,
+        category: "People",
+        level: "Intermediate",
+        passage: "Her clear explanations make English lessons lively and enjoyable.",
+        question: "The antonym of the word 'clear' in this context is...",
+        options: [
+          "Understandable",
+          "Confusing",
+          "Lucid",
+          "Simple"
+        ],
+        answer: 1,
+        explanation: "'Clear' (jelas/gamblang) berlawanan makna (antonym) dengan 'confusing' (membingungkan/tidak jelas)."
+      },
+
+      // PASSAGE 8: Mount Bromo (Places)
+      {
+        id: 26,
+        category: "Places",
+        level: "Beginner",
+        passage: "Mount Bromo is an active volcano situated in East Java, Indonesia. Standing at an elevation of 2,329 meters, it lies within the expansive Bromo Tengger Semeru National Park. What makes Bromo unique is the vast plain known as the 'Sea of Sand' (Laut Pasir) surrounding its cone. In the early morning, hundreds of travelers hike to Mount Penanjakan to witness the dramatic golden sunrise rising above Bromo's smoldering crater.",
+        question: "What is the unique landscape surrounding Mount Bromo's cone?",
+        options: [
+          "A thick tropical rainforest",
+          "A frozen glacier lake",
+          "The Sea of Sand (Laut Pasir)",
+          "A modern amusement park"
+        ],
+        answer: 2,
+        explanation: "Dalam bacaan: 'What makes Bromo unique is the vast plain known as the 'Sea of Sand' (Laut Pasir)'."
+      },
+      {
+        id: 27,
+        category: "Places",
+        level: "Intermediate",
+        passage: "In the early morning, hundreds of travelers hike to Mount Penanjakan to witness the dramatic golden sunrise rising above Bromo's smoldering crater.",
+        question: "Why do travelers hike to Mount Penanjakan early in the morning?",
+        options: [
+          "To collect volcanic rocks",
+          "To witness the dramatic golden sunrise",
+          "To camp inside the crater",
+          "To escape from cold weather"
+        ],
+        answer: 1,
+        explanation: "Tujuan pengunjung ke Pananjakan adalah: 'to witness the dramatic golden sunrise'."
+      },
+      {
+        id: 28,
+        category: "Places",
+        level: "Intermediate",
+        passage: "Standing at an elevation of 2,329 meters, it lies within the expansive Bromo Tengger Semeru National Park.",
+        question: "The word 'expansive' can be replaced by...",
+        options: [
+          "Narrow",
+          "Vast and wide",
+          "Dangerous",
+          "Crowded"
+        ],
+        answer: 1,
+        explanation: "'Expansive' berarti sangat luas membentang, cocok digantikan oleh 'vast and wide'."
+      },
+
+      // LANGUAGE FEATURES & GRAMMAR IN DESCRIPTIVE TEXT
+      {
+        id: 29,
+        category: "Grammar",
+        level: "Beginner",
+        passage: "Complete the sentence with the correct verb form: 'My grandmother's traditional house _______ (have) four wooden carved pillars.'",
+        question: "Choose the correct verb to complete the descriptive sentence:",
+        options: [
+          "have",
+          "has",
+          "is having",
+          "had been"
+        ],
+        answer: 1,
+        explanation: "Subjek tunggal orang ketiga ('My grandmother's traditional house') menggunakan kata kerja 'has' dalam Simple Present Tense."
+      },
+      {
+        id: 30,
+        category: "Grammar",
+        level: "Beginner",
+        passage: "Complete the sentence: 'The orchids in my mother's balcony _______ colorful and fragrant.'",
+        question: "What is the suitable linking verb (to be)?",
+        options: [
+          "is",
+          "are",
+          "was",
+          "am"
+        ],
+        answer: 1,
+        explanation: "Subjek 'The orchids' adalah jamak (plural), sehingga kata kerja penghubung (be) yang tepat adalah 'are'."
+      },
+      {
+        id: 31,
+        category: "Grammar",
+        level: "Intermediate",
+        passage: "Look at the order of adjectives: 'She bought a (leather / stylish / brown / Italian) bag.'",
+        question: "What is the correct adjective order according to English grammar?",
+        options: [
+          "A stylish brown Italian leather bag",
+          "An Italian brown stylish leather bag",
+          "A leather stylish brown Italian bag",
+          "A brown Italian stylish leather bag"
+        ],
+        answer: 0,
+        explanation: "Urutan kata sifat (OSASCOMP): Opinion (stylish) -> Color (brown) -> Origin (Italian) -> Material (leather)."
+      },
+      {
+        id: 32,
+        category: "Grammar",
+        level: "Intermediate",
+        passage: "Identify the generic structure of this paragraph: 'Bali is an Indonesian island known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs. It is situated eastward of Java.'",
+        question: "This paragraph belongs to...",
+        options: [
+          "Identification",
+          "Description",
+          "Orientation",
+          "Recommendation"
+        ],
+        answer: 0,
+        explanation: "Paragraf pengantar yang memperkenalkan letak dan garis besar Bali sebelum detail spesifik adalah 'Identification'."
+      },
+      {
+        id: 33,
+        category: "Grammar",
+        level: "Intermediate",
+        passage: "Choose the sentence that correctly uses an adjective phrase:",
+        question: "Which sentence features a descriptive adjective phrase?",
+        options: [
+          "He walked slowly into the forest.",
+          "The house with the red terracotta roof looks extremely magnificent.",
+          "They are going to school tomorrow morning.",
+          "Because it was raining, we stayed indoors."
+        ],
+        answer: 1,
+        explanation: "'extremely magnificent' adalah adjective phrase yang menjelaskan penampakan rumah."
+      },
+      {
+        id: 34,
+        category: "Grammar",
+        level: "Beginner",
+        passage: "Which of the following is NOT a typical language feature of a descriptive text?",
+        question: "Select the feature NOT commonly used in descriptive writing:",
+        options: [
+          "Focus on specific participants",
+          "Use of simple present tense",
+          "Use of adjectives to describe qualities",
+          "Use of past continuous tense to tell a sequence of historical fiction"
+        ],
+        answer: 3,
+        explanation: "Teks naratif lah yang berfokus pada past continuous dan fiksi historis; teks deskriptif menggunakan simple present tense dan berfokus pada fakta objek."
+      },
+
+      // PASSAGE 9: The Smartphone (Things)
+      {
+        id: 35,
+        category: "Things",
+        level: "Beginner",
+        passage: "I recently bought a sleek modern smartphone. It has a 6.7-inch AMOLED display with ultra-thin bezels. The back panel is coated with frosted matte glass in deep midnight blue, which prevents finger smudges. On the top left corner of the back, there is a triple-lens camera module housed in a polished metallic ring. The phone is featherlight yet feels solid in hand.",
+        question: "What color is the back panel of the smartphone?",
+        options: [
+          "Shiny silver",
+          "Deep midnight blue",
+          "Glossy bright red",
+          "Matte golden"
+        ],
+        answer: 1,
+        explanation: "Disebutkan dalam teks: 'frosted matte glass in deep midnight blue'."
+      },
+      {
+        id: 36,
+        category: "Things",
+        level: "Intermediate",
+        passage: "The phone is featherlight yet feels solid in hand.",
+        question: "The compound word 'featherlight' means...",
+        options: [
+          "Made of real duck feathers",
+          "Extremely light in weight",
+          "Very heavy and bulky",
+          "Easily broken like glass"
+        ],
+        answer: 1,
+        explanation: "'Featherlight' (seringan bulu) merupakan kiasan untuk benda yang sangat ringan (extremely light in weight)."
+      },
+
+      // PASSAGE 10: The Giant Panda (Animals)
+      {
+        id: 37,
+        category: "Animals",
+        level: "Beginner",
+        passage: "The giant panda is a bear species endemic to south-central China. It is easily recognized by the large, distinctive black patches around its eyes, over the ears, and across its round body. Though it belongs to the order Carnivora, the giant panda's diet is overwhelmingly herbivorous, consisting of more than 99% bamboo. In the wild, they spend up to 12 hours a day munching on fresh bamboo stems and leaves.",
+        question: "What makes up over 99% of a giant panda's diet?",
+        options: [
+          "Small insects",
+          "Fresh river fish",
+          "Bamboo",
+          "Eucalyptus leaves"
+        ],
+        answer: 2,
+        explanation: "Disebutkan: '...consisting of more than 99% bamboo'."
+      },
+      {
+        id: 38,
+        category: "Animals",
+        level: "Intermediate",
+        passage: "The giant panda is a bear species endemic to south-central China.",
+        question: "The word 'endemic' in the sentence implies that pandas...",
+        options: [
+          "Can be found wild everywhere in the world",
+          "Are native and restricted to a particular geographic area",
+          "Are dangerous predators causing diseases",
+          "Were artificially created in laboratories"
+        ],
+        answer: 1,
+        explanation: "'Endemic' dalam biologi bermakna asli dan terbatas pada kawasan geografis tertentu (native and restricted)."
+      },
+      {
+        id: 39,
+        category: "Animals",
+        level: "Beginner",
+        passage: "In the wild, they spend up to 12 hours a day munching on fresh bamboo stems and leaves.",
+        question: "How long can a wild panda spend eating in a day?",
+        options: [
+          "Up to 2 hours",
+          "Up to 6 hours",
+          "Up to 12 hours",
+          "Up to 24 hours"
+        ],
+        answer: 2,
+        explanation: "Berdasarkan teks: 'they spend up to 12 hours a day munching...'."
+      },
+
+      // PASSAGE 11: Lake Toba (Places)
+      {
+        id: 40,
+        category: "Places",
+        level: "Beginner",
+        passage: "Lake Toba is an immense natural lake in North Sumatra, occupying the caldera of a supervolcano. Measuring roughly 100 kilometers long and 30 kilometers wide, it is the largest lake in Indonesia and the largest volcanic lake in the world. In the middle of this deep tranquil lake lies Samosir Island, an island almost as large as Singapore, rich in traditional Batak culture.",
+        question: "What island is situated in the middle of Lake Toba?",
+        options: [
+          "Bali Island",
+          "Samosir Island",
+          "Nias Island",
+          "Madura Island"
+        ],
+        answer: 1,
+        explanation: "Disebutkan pada teks: 'In the middle of this deep tranquil lake lies Samosir Island'."
+      },
+      {
+        id: 41,
+        category: "Places",
+        level: "Intermediate",
+        passage: "Lake Toba is an immense natural lake in North Sumatra, occupying the caldera of a supervolcano.",
+        question: "The word 'immense' is closest in meaning to...",
+        options: [
+          "Enormous",
+          "Shallow",
+          "Polluted",
+          "Narrow"
+        ],
+        answer: 0,
+        explanation: "'Immense' berarti sangat amat besar atau luas (enormous / colossal)."
+      },
+      {
+        id: 42,
+        category: "Places",
+        level: "Intermediate",
+        passage: "Measuring roughly 100 kilometers long and 30 kilometers wide, it is the largest lake in Indonesia...",
+        question: "What type of lake is Lake Toba scientifically classified as?",
+        options: [
+          "A human-made reservoir",
+          "A supervolcanic caldera lake",
+          "A glacial melt lake",
+          "A coastal lagoon"
+        ],
+        answer: 1,
+        explanation: "Teks menjelaskan: 'occupying the caldera of a supervolcano' (danau kaldera supervulkanik)."
+      },
+
+      // PASSAGE 12: My Best Friend, Kevin (People)
+      {
+        id: 43,
+        category: "People",
+        level: "Beginner",
+        passage: "Kevin has been my desk mate since junior high school. He is of medium height with tanned skin, a cheerful face, and short spiky hair. He is enthusiastic about science and robotics, often spending his weekends assembling miniature solar cars. What I admire most about Kevin is his willingness to help anyone struggling with math problems without ever showing off.",
+        question: "What hobby does Kevin enjoy on weekends?",
+        options: [
+          "Baking chocolate cakes",
+          "Assembling miniature solar cars",
+          "Playing video games all day",
+          "Collecting antique coins"
+        ],
+        answer: 1,
+        explanation: "Sesuai bacaan: 'often spending his weekends assembling miniature solar cars'."
+      },
+      {
+        id: 44,
+        category: "People",
+        level: "Intermediate",
+        passage: "What I admire most about Kevin is his willingness to help anyone struggling with math problems without ever showing off.",
+        question: "The phrase 'without ever showing off' indicates that Kevin is...",
+        options: [
+          "Humble and modest",
+          "Proud and arrogant",
+          "Shy and cowardly",
+          "Lazy and careless"
+        ],
+        answer: 0,
+        explanation: "Tidak menyombongkan diri (without showing off) menunjukkan karakter rendah hati (humble and modest)."
+      },
+
+      // PASSAGE 13: Traditional Indonesian Angklung (Things)
+      {
+        id: 45,
+        category: "Things",
+        level: "Beginner",
+        passage: "The Angklung is a musical instrument from West Java made of varying numbers of bamboo tubes attached to a bamboo frame. The tubes are carved so that they have a resonant pitch when struck or shaken. To play an angklung, one holds the frame with one hand while shaking the bottom tubes rapidly with the other hand. It produces an enchanting, echoing melody.",
+        question: "Where does the musical instrument Angklung originate from?",
+        options: [
+          "West Java",
+          "South Sulawesi",
+          "Papua",
+          "East Nusa Tenggara"
+        ],
+        answer: 0,
+        explanation: "Tertulis pada kalimat pembuka: 'The Angklung is a musical instrument from West Java'."
+      },
+      {
+        id: 46,
+        category: "Things",
+        level: "Beginner",
+        passage: "To play an angklung, one holds the frame with one hand while shaking the bottom tubes rapidly with the other hand.",
+        question: "How is an angklung played?",
+        options: [
+          "By blowing into a mouthpiece",
+          "By plucking tight strings",
+          "By holding the frame and shaking the tubes",
+          "By hitting it with iron hammers"
+        ],
+        answer: 2,
+        explanation: "Cara memainkan angklung sesuai teks: memegang rangka dan menggoyangkan tabung ('shaking the bottom tubes')."
+      },
+      {
+        id: 47,
+        category: "Things",
+        level: "Intermediate",
+        passage: "It produces an enchanting, echoing melody.",
+        question: "The word 'enchanting' is an adjective that conveys that the melody is...",
+        options: [
+          "Disturbing and noisy",
+          "Charming and captivating",
+          "Boring and sleepy",
+          "Frightening"
+        ],
+        answer: 1,
+        explanation: "'Enchanting' berarti memikat, menawan, atau memesona hati (charming / captivating)."
+      },
+
+      // GRAMMAR & SYNTHESIS
+      {
+        id: 48,
+        category: "Grammar",
+        level: "Intermediate",
+        passage: "'An elephant _______ (have) large ears and a long trunk which _______ (help) it breathe and grab food.'",
+        question: "Select the pair of verbs that correctly fits the blanks:",
+        options: [
+          "have / help",
+          "has / helps",
+          "had / helped",
+          "is having / helping"
+        ],
+        answer: 1,
+        explanation: "Keduanya mengikuti subjek singular orang ketiga ('An elephant has...' dan 'which helps...')."
+      },
+      {
+        id: 49,
+        category: "Theory",
+        level: "Intermediate",
+        passage: "Consider the two structural parts of a Descriptive Text: (1) Identification and (2) Description.",
+        question: "What is the primary content found in the 'Description' section?",
+        options: [
+          "The author's farewell greetings and signature",
+          "Specific qualities, parts, physical traits, or behaviors of the subject",
+          "Step-by-step instructions on how to assemble a machine",
+          "A conflict and dramatic climax involving characters"
+        ],
+        answer: 1,
+        explanation: "Bagian 'Description' menjabarkan kualitas, bagian, sifat fisik, dan ciri khas dari subjek yang dibahas."
+      },
+      {
+        id: 50,
+        category: "Theory",
+        level: "Intermediate",
+        passage: "Read the sentence: 'The old library smells like dry paper, cedar wood, and memories.'",
+        question: "Which sensory detail (pancaindra) is mainly stimulated in this descriptive sentence?",
+        options: [
+          "Sense of hearing (Auditory)",
+          "Sense of smell (Olfactory)",
+          "Sense of taste (Gustatory)",
+          "Sense of balance"
+        ],
+        answer: 1,
+        explanation: "Kata kerja 'smells like' (beraroma/berbau) merangsang indra penciuman (Sense of smell / Olfactory)."
+      }
+    ];
+
+    // ==================== STATE MANAGEMENT ====================
+    let currentQuestionIndex = 0;
+    let studentName = "";
+    let studentClass = "XA";
+    let userAnswers = new Array(questionsData.length).fill(null);
+    let bookmarkedQuestions = new Set();
+    let startTime = null;
+    let timerInterval = null;
+    let elapsedTimeSeconds = 0;
+
+    // Google Apps Script Web App Configuration
+    let googleScriptUrl = "https://script.google.com/macros/s/AKfycbzRJ_ZzfGkoAMh3Blv8_dG5Hmq93BVbkjyXbIoFGt2TXNsNhuLtuRMNyK-JVk2pgm-R/exec";
+    let lastSubmissionPayload = null;
+
+    // Web Audio Synthesizer for pleasant tactile sound effects (no external files)
+    const AudioService = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      },
+      playTone(freq = 440, type = 'sine', duration = 0.12, gainVal = 0.08) {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          // Audio fallback silent
+        }
+      },
+      playClick() { this.playTone(600, 'sine', 0.06, 0.05); },
+      playSelect() { this.playTone(850, 'triangle', 0.08, 0.06); },
+      playFinish() { 
+        this.playTone(523.25, 'triangle', 0.15, 0.08);
+        setTimeout(() => this.playTone(659.25, 'triangle', 0.15, 0.08), 120);
+        setTimeout(() => this.playTone(783.99, 'triangle', 0.35, 0.1), 240);
+      }
+    };
+
+    // ==================== FLOW & CONTROLLERS ====================
+
+    function handleStartQuiz(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('input-name').value.trim();
+      const classInput = document.querySelector('input[name="student-class"]:checked').value;
+
+      if (!nameInput) return;
+
+      studentName = nameInput;
+      studentClass = classInput;
+
+      AudioService.playSelect();
+
+      // Update Nav
+      document.getElementById('nav-student-name').textContent = studentName;
+      document.getElementById('nav-student-class').textContent = 'Kelas ' + studentClass;
+      document.getElementById('nav-student-info').classList.remove('hidden');
+      document.getElementById('nav-student-info').classList.add('flex');
+      
+      // Hide admin config on quiz start
+      const adminBtn = document.getElementById('nav-admin-btn');
+      if (adminBtn) adminBtn.classList.add('hidden');
+
+      // Switch screen
+      document.getElementById('screen-login').classList.add('hidden');
+      const quizScreen = document.getElementById('screen-quiz');
+      quizScreen.classList.remove('hidden');
+      quizScreen.classList.add('flex');
+
+      // Start Timer
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimerDisplay, 1000);
+
+      // Render Navigator grids
+      buildNavGrid();
+
+      // Render First Question
+      currentQuestionIndex = 0;
+      renderCurrentQuestion();
+    }
+
+    function updateTimerDisplay() {
+      elapsedTimeSeconds++;
+      const mins = Math.floor(elapsedTimeSeconds / 60);
+      const secs = elapsedTimeSeconds % 60;
+      const fmt = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      const elem = document.getElementById('timer-display');
+      if (elem) elem.textContent = fmt;
+    }
+
+    function formatTime(totalSecs) {
+      const mins = Math.floor(totalSecs / 60);
+      const secs = totalSecs % 60;
+      return `${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+    }
+
+    function renderCurrentQuestion() {
+      const q = questionsData[currentQuestionIndex];
+      const isFirst = currentQuestionIndex === 0;
+      const isLast = currentQuestionIndex === questionsData.length - 1;
+
+      // Header Meta
+      document.getElementById('q-category').textContent = q.category;
+      document.getElementById('q-level').textContent = q.level;
+      document.getElementById('q-number-title').textContent = `Soal No. ${q.id} dari ${questionsData.length}`;
+
+      // Stimulus / Passage
+      const stimulusBox = document.getElementById('stimulus-container');
+      if (q.passage && q.passage.trim() !== "") {
+        stimulusBox.innerHTML = `
+          <div class="flex items-center gap-1.5 text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">
+            <i data-lucide="file-text" class="w-4 h-4 text-brand-600"></i>
+            <span>Teks Bacaan:</span>
+          </div>
+          <p class="italic text-slate-800 leading-relaxed font-serif text-sm sm:text-base border-l-4 border-brand-500 pl-3.5 my-1">
+            "${q.passage}"
+          </p>
+        `;
+        stimulusBox.classList.remove('hidden');
+      } else {
+        stimulusBox.classList.add('hidden');
+      }
+
+      // Prompt
+      document.getElementById('q-text').textContent = q.question;
+
+      // Options
+      const optionsBox = document.getElementById('options-container');
+      optionsBox.innerHTML = "";
+      const letters = ['A', 'B', 'C', 'D'];
+
+      q.options.forEach((optText, idx) => {
+        const isSelected = userAnswers[currentQuestionIndex] === idx;
+        const optBtn = document.createElement('button');
+        optBtn.type = "button";
+        optBtn.className = `w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 transition-all flex items-start space-x-3 text-sm font-medium ${
+          isSelected 
+            ? 'border-brand-600 bg-brand-50/70 text-brand-900 shadow-sm' 
+            : 'border-slate-200 hover:border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+        }`;
+        optBtn.onclick = () => selectOption(idx);
+
+        optBtn.innerHTML = `
+          <span class="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
+            isSelected ? 'bg-brand-600 text-white shadow-sm' : 'bg-slate-100 text-slate-600'
+          }">
+            ${letters[idx]}
+          </span>
+          <span class="mt-0.5 leading-snug">${optText}</span>
+        `;
+        optionsBox.appendChild(optBtn);
+      });
+
+      // Update Navigation Buttons
+      document.getElementById('btn-prev').disabled = isFirst;
+      document.getElementById('btn-prev').classList.toggle('opacity-40', isFirst);
+      document.getElementById('btn-prev').classList.toggle('cursor-not-allowed', isFirst);
+
+      if (isLast) {
+        document.getElementById('btn-next').classList.add('hidden');
+        document.getElementById('btn-finish').classList.remove('hidden');
+        document.getElementById('btn-finish').classList.add('flex');
+      } else {
+        document.getElementById('btn-next').classList.remove('hidden');
+        document.getElementById('btn-finish').classList.add('hidden');
+        document.getElementById('btn-finish').classList.remove('flex');
+      }
+
+      // Progress bar & text
+      const progressPct = ((currentQuestionIndex + 1) / questionsData.length) * 100;
+      document.getElementById('progress-bar-fill').style.width = `${progressPct}%`;
+      document.getElementById('progress-text').textContent = `${currentQuestionIndex + 1} / ${questionsData.length}`;
+
+      // Update Bookmark Button state
+      updateBookmarkBtnState();
+
+      // Refresh Grid highlighting
+      updateNavGridState();
+
+      // Re-trigger Lucide icons for newly inserted HTML
+      lucide.createIcons();
+    }
+
+    function selectOption(index) {
+      AudioService.playSelect();
+      userAnswers[currentQuestionIndex] = index;
+      renderCurrentQuestion();
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        AudioService.playClick();
+        currentQuestionIndex--;
+        renderCurrentQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < questionsData.length - 1) {
+        AudioService.playClick();
+        currentQuestionIndex++;
+        renderCurrentQuestion();
+      }
+    }
+
+    function jumpToQuestion(idx) {
+      AudioService.playClick();
+      currentQuestionIndex = idx;
+      renderCurrentQuestion();
+      toggleGridModal(false);
+    }
+
+    function toggleBookmark() {
+      AudioService.playClick();
+      if (bookmarkedQuestions.has(currentQuestionIndex)) {
+        bookmarkedQuestions.delete(currentQuestionIndex);
+      } else {
+        bookmarkedQuestions.add(currentQuestionIndex);
+      }
+      updateBookmarkBtnState();
+      updateNavGridState();
+    }
+
+    function updateBookmarkBtnState() {
+      const isMarked = bookmarkedQuestions.has(currentQuestionIndex);
+      const btn = document.getElementById('btn-bookmark');
+      const icon = document.getElementById('bookmark-icon');
+      const label = document.getElementById('bookmark-label');
+
+      if (isMarked) {
+        btn.className = "flex items-center space-x-1 px-3 py-1.5 rounded-xl border border-amber-400 bg-amber-100 text-amber-800 text-xs font-bold transition";
+        label.textContent = "Ditandai Ragu";
+      } else {
+        btn.className = "flex items-center space-x-1 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300 transition";
+        label.textContent = "Ragu-ragu";
+      }
+    }
+
+    function buildNavGrid() {
+      const desktopGrid = document.getElementById('desktop-grid');
+      const mobileGrid = document.getElementById('mobile-grid');
+      desktopGrid.innerHTML = "";
+      mobileGrid.innerHTML = "";
+
+      questionsData.forEach((_, idx) => {
+        // Desktop
+        const btnD = document.createElement('button');
+        btnD.id = `btn-nav-d-${idx}`;
+        btnD.className = getGridBtnClass(idx);
+        btnD.textContent = idx + 1;
+        btnD.onclick = () => jumpToQuestion(idx);
+        desktopGrid.appendChild(btnD);
+
+        // Mobile
+        const btnM = document.createElement('button');
+        btnM.id = `btn-nav-m-${idx}`;
+        btnM.className = getGridBtnClass(idx);
+        btnM.textContent = idx + 1;
+        btnM.onclick = () => jumpToQuestion(idx);
+        mobileGrid.appendChild(btnM);
+      });
+    }
+
+    function getGridBtnClass(idx) {
+      const isCurrent = currentQuestionIndex === idx;
+      const isAnswered = userAnswers[idx] !== null;
+      const isMarked = bookmarkedQuestions.has(idx);
+
+      let base = "h-9 rounded-xl font-bold text-xs flex items-center justify-center transition border ";
+
+      if (isCurrent) {
+        base += "ring-2 ring-brand-500 ring-offset-1 ";
+      }
+
+      if (isMarked) {
+        return base + "bg-amber-400 text-amber-950 border-amber-500 shadow-sm";
+      }
+      if (isAnswered) {
+        return base + "bg-brand-600 text-white border-brand-600 shadow-sm";
+      }
+      return base + "bg-white text-slate-700 border-slate-200 hover:bg-slate-100";
+    }
+
+    function updateNavGridState() {
+      questionsData.forEach((_, idx) => {
+        const btnD = document.getElementById(`btn-nav-d-${idx}`);
+        const btnM = document.getElementById(`btn-nav-m-${idx}`);
+        const newClass = getGridBtnClass(idx);
+        if (btnD) btnD.className = newClass;
+        if (btnM) btnM.className = newClass;
+      });
+    }
+
+    function toggleGridModal(open) {
+      AudioService.playClick();
+      const modal = document.getElementById('modal-mobile-grid');
+      if (open) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function openMaterialModal() {
+      AudioService.playClick();
+      const modal = document.getElementById('modal-material');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeMaterialModal() {
+      AudioService.playClick();
+      const modal = document.getElementById('modal-material');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // ==================== SUBMISSION & RESULTS ====================
+
+    function confirmSubmitQuiz() {
+      AudioService.playClick();
+      const answeredCount = userAnswers.filter(ans => ans !== null).length;
+      const unAnsweredCount = questionsData.length - answeredCount;
+      const markedCount = bookmarkedQuestions.size;
+
+      let msg = `Kamu telah menjawab <strong>${answeredCount}</strong> dari ${questionsData.length} soal.`;
+      if (unAnsweredCount > 0) {
+        msg += `<br><span class="text-rose-600 font-semibold">Masih ada ${unAnsweredCount} soal yang belum dijawab!</span>`;
+      }
+      if (markedCount > 0) {
+        msg += `<br><span class="text-amber-600 font-semibold">Ada ${markedCount} soal berstatus ragu-ragu.</span>`;
+      }
+
+      document.getElementById('confirm-status-text').innerHTML = msg;
+      const modal = document.getElementById('modal-confirm');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeConfirmModal() {
+      AudioService.playClick();
+      const modal = document.getElementById('modal-confirm');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitQuizFinal() {
+      closeConfirmModal();
+      clearInterval(timerInterval);
+      AudioService.playFinish();
+
+      // Calculate Scores
+      let correct = 0;
+      questionsData.forEach((q, idx) => {
+        if (userAnswers[idx] === q.answer) {
+          correct++;
+        }
+      });
+
+      const wrongOrSkipped = questionsData.length - correct;
+      const finalScore = Math.round((correct / questionsData.length) * 100);
+
+      // Trigger Confetti celebration if score is high
+      if (finalScore >= 75) {
+        try {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        } catch(e) {}
+      }
+
+      // Populate Result UI
+      document.getElementById('res-student-name').textContent = studentName;
+      document.getElementById('res-student-class').textContent = `Kelas ${studentClass}`;
+      document.getElementById('res-score').textContent = finalScore;
+      document.getElementById('res-correct').textContent = correct;
+      document.getElementById('res-wrong').textContent = wrongOrSkipped;
+      document.getElementById('res-duration').textContent = formatTime(elapsedTimeSeconds);
+
+      // Feedback Badge
+      const badgeBox = document.getElementById('res-badge-box');
+      const badgeTitle = document.getElementById('res-badge-title');
+      const badgeDesc = document.getElementById('res-badge-desc');
+      let predicateText = "";
+
+      if (finalScore >= 85) {
+        predicateText = "Sangat Memuaskan (Mastery Achieved)";
+        badgeBox.className = "p-4 rounded-2xl border text-sm mb-6 flex items-start gap-3 bg-emerald-50 border-emerald-200 text-emerald-900";
+        badgeTitle.textContent = "Predikat: " + predicateText;
+        badgeDesc.textContent = "Luar biasa! Kamu menguasai struktur teks deskriptif (Identification & Description), kosakata kata sifat, serta penggunaan Simple Present Tense dengan sangat akurat.";
+      } else if (finalScore >= 70) {
+        predicateText = "Baik (Proficient)";
+        badgeBox.className = "p-4 rounded-2xl border text-sm mb-6 flex items-start gap-3 bg-indigo-50 border-indigo-200 text-indigo-900";
+        badgeTitle.textContent = "Predikat: " + predicateText;
+        badgeDesc.textContent = "Kerja bagus! Pemahamanmu terhadap teks deskriptif sudah kokoh. Pelajari lagi beberapa kosakata sinonim dan susunan kata sifat (adjective order) untuk mencapai nilai sempurna.";
+      } else {
+        predicateText = "Cukup (Perlu Latihan Tambahan)";
+        badgeBox.className = "p-4 rounded-2xl border text-sm mb-6 flex items-start gap-3 bg-amber-50 border-amber-200 text-amber-900";
+        badgeTitle.textContent = "Predikat: " + predicateText;
+        badgeDesc.textContent = "Tetap semangat! Pelajari kembali Generic Structure dan ciri kebahasaan melalui rangkuman materi dan telaah pembahasan di bawah ini.";
+      }
+
+      // Prepare Google Sheets Payload
+      const answersSummaryText = userAnswers.map((ans, i) => {
+        const char = ans !== null ? ['A','B','C','D'][ans] : '-';
+        return `Q${i+1}:${char}`;
+      }).join(', ');
+
+      lastSubmissionPayload = {
+        timestamp: new Date().toLocaleString("id-ID"),
+        studentName: studentName,
+        studentClass: studentClass,
+        score: finalScore,
+        correctCount: correct,
+        wrongCount: wrongOrSkipped,
+        duration: formatTime(elapsedTimeSeconds),
+        predicate: predicateText,
+        answersSummary: answersSummaryText
+      };
+
+      // Auto-send data to Google Sheet
+      sendDataToGoogleSheet();
+
+      // Render Review List
+      renderReviewList();
+
+      // Switch screen
+      document.getElementById('screen-quiz').classList.add('hidden');
+      document.getElementById('screen-quiz').classList.remove('flex');
+      
+      const resultScreen = document.getElementById('screen-result');
+      resultScreen.classList.remove('hidden');
+      resultScreen.classList.add('flex');
+
+      lucide.createIcons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==================== GOOGLE SHEETS SCRIPT DISPATCH ====================
+
+    async function sendDataToGoogleSheet() {
+      const statusBox = document.getElementById('sheet-sync-status');
+      const syncSpinner = document.getElementById('sync-spinner');
+      const syncTitle = document.getElementById('sync-title');
+      const syncSubtitle = document.getElementById('sync-subtitle');
+      const retryBtn = document.getElementById('btn-retry-sync');
+
+      if (!statusBox || !lastSubmissionPayload) return;
+
+      // Check if URL is still placeholder or empty
+      if (!googleScriptUrl || googleScriptUrl.includes('EXAMPLE')) {
+        syncSpinner.classList.add('hidden');
+        statusBox.className = "mb-6 p-4 rounded-2xl border text-xs sm:text-sm flex items-center justify-between transition-all bg-amber-50 border-amber-200 text-amber-800";
+        syncTitle.textContent = "Data Tersimpan di Perangkat (Offline Mode)";
+        syncSubtitle.textContent = "URL Google Apps Script belum dikonfigurasi. Klik 'Pengaturan Spreadsheet' untuk menautkan.";
+        retryBtn.textContent = "Atur URL";
+        retryBtn.onclick = () => openSheetConfigModal();
+        retryBtn.classList.remove('hidden');
+        return;
+      }
+
+      // Set Loading UI
+      syncSpinner.classList.remove('hidden');
+      statusBox.className = "mb-6 p-4 rounded-2xl border text-xs sm:text-sm flex items-center justify-between transition-all bg-indigo-50 border-indigo-200 text-indigo-900";
+      syncTitle.textContent = "Mengirim nilai ke Google Spreadsheet...";
+      syncSubtitle.textContent = "Sinkronisasi otomatis dengan server Google Sheets...";
+      retryBtn.classList.add('hidden');
+
+      try {
+        // Send via POST with text/plain body to prevent CORS preflight block on Google Apps Script
+        await fetch(googleScriptUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(lastSubmissionPayload)
+        });
+
+        // Since 'no-cors' mode produces opaque responses, success is handled gracefully
+        syncSpinner.classList.add('hidden');
+        statusBox.className = "mb-6 p-4 rounded-2xl border text-xs sm:text-sm flex items-center justify-between transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
+        syncTitle.innerHTML = `<span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Nilai Berhasil Terkirim ke Spreadsheet!</span>`;
+        syncSubtitle.textContent = `Tercatat untuk ${lastSubmissionPayload.studentName} (${lastSubmissionPayload.studentClass}) pada ${lastSubmissionPayload.timestamp}`;
+        retryBtn.classList.add('hidden');
+        lucide.createIcons();
+
+      } catch (error) {
+        console.error("Gagal mengirim ke Google Sheets:", error);
+        syncSpinner.classList.add('hidden');
+        statusBox.className = "mb-6 p-4 rounded-2xl border text-xs sm:text-sm flex items-center justify-between transition-all bg-rose-50 border-rose-200 text-rose-900";
+        syncTitle.textContent = "Gagal Mengirim ke Spreadsheet";
+        syncSubtitle.textContent = "Terjadi kendala jaringan atau URL Apps Script tidak merespon.";
+        retryBtn.textContent = "Coba Lagi";
+        retryBtn.onclick = () => sendDataToGoogleSheet();
+        retryBtn.classList.remove('hidden');
+      }
+    }
+
+    // ==================== SHEET MODAL HANDLERS ====================
+
+    function openSheetConfigModal() {
+      AudioService.playClick();
+      const input = document.getElementById('script-url-input');
+      if (input && googleScriptUrl && !googleScriptUrl.includes('EXAMPLE')) {
+        input.value = googleScriptUrl;
+      }
+      const modal = document.getElementById('modal-sheet-config');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeSheetConfigModal() {
+      AudioService.playClick();
+      const modal = document.getElementById('modal-sheet-config');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function saveSheetUrl() {
+      const input = document.getElementById('script-url-input');
+      const val = input.value.trim();
+      if (!val) return;
+      googleScriptUrl = val;
+      
+      // Feedback button
+      AudioService.playSelect();
+      const modal = document.getElementById('modal-sheet-config');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+
+      // If user was on result screen, retry immediately
+      if (lastSubmissionPayload) {
+        sendDataToGoogleSheet();
+      }
+    }
+
+    function copyAppsScriptCode() {
+      const codeElem = document.getElementById('apps-script-code');
+      const copyBtn = document.getElementById('btn-copy-code');
+      if (!codeElem) return;
+
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = codeElem.innerText;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      copyBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Tersalin!`;
+      lucide.createIcons();
+      setTimeout(() => {
+        copyBtn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Kode`;
+        lucide.createIcons();
+      }, 2000);
+    }
+
+    function renderReviewList() {
+      const container = document.getElementById('review-list');
+      container.innerHTML = "";
+      const letters = ['A', 'B', 'C', 'D'];
+
+      questionsData.forEach((q, idx) => {
+        const userChoice = userAnswers[idx];
+        const isCorrect = userChoice === q.answer;
+        const isSkipped = userChoice === null;
+
+        const card = document.createElement('div');
+        card.className = `p-5 sm:p-6 rounded-2xl border bg-white shadow-sm space-y-3 ${
+          isCorrect ? 'border-emerald-200' : 'border-rose-200'
+        }`;
+
+        let statusBadge = "";
+        if (isCorrect) {
+          statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i> Jawaban Benar
+          </span>`;
+        } else if (isSkipped) {
+          statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+            <i data-lucide="minus" class="w-3.5 h-3.5"></i> Tidak Dijawab
+          </span>`;
+        } else {
+          statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i> Jawaban Salah
+          </span>`;
+        }
+
+        const userText = isSkipped ? "<em>Tidak ada</em>" : `(${letters[userChoice]}) ${q.options[userChoice]}`;
+        const correctText = `(${letters[q.answer]}) ${q.options[q.answer]}`;
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-slate-800 text-sm">Nomor ${idx + 1}</span>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold">${q.category}</span>
+            </div>
+            ${statusBadge}
+          </div>
+
+          ${q.passage ? `<p class="text-xs italic text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 font-serif">"${q.passage}"</p>` : ''}
+
+          <p class="text-sm font-bold text-slate-900">${q.question}</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+            <div class="p-2.5 rounded-xl ${isCorrect ? 'bg-emerald-50 text-emerald-900' : 'bg-rose-50 text-rose-900'}">
+              <span class="font-bold block text-[10px] uppercase opacity-75">Pilihan Kamu:</span>
+              ${userText}
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200">
+              <span class="font-bold block text-[10px] uppercase opacity-75">Kunci Jawaban Benar:</span>
+              ${correctText}
+            </div>
+          </div>
+
+          <div class="bg-indigo-50/70 p-3 rounded-xl text-xs text-indigo-950 leading-relaxed border border-indigo-100">
+            <strong class="font-semibold text-brand-700 flex items-center gap-1 mb-0.5">
+              <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Pembahasan:
+            </strong>
+            ${q.explanation}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function scrollToReview() {
+      const rev = document.getElementById('review-section');
+      if (rev) {
+        rev.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function restartQuiz() {
+      AudioService.playClick();
+      userAnswers = new Array(questionsData.length).fill(null);
+      bookmarkedQuestions.clear();
+      elapsedTimeSeconds = 0;
+      currentQuestionIndex = 0;
+
+      // Hide results, Show Quiz
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('flex');
+      
+      const quizScreen = document.getElementById('screen-quiz');
+      quizScreen.classList.remove('hidden');
+      quizScreen.classList.add('flex');
+
+      // Restart Timer
+      timerInterval = setInterval(updateTimerDisplay, 1000);
+
+      buildNavGrid();
+      renderCurrentQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initialize Lucide icons on load
+    window.onload = function() {
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>
